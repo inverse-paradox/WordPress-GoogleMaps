@@ -107,7 +107,7 @@ function ipGoogleMaps($atts) {
 				var directionsDisplay;
 				var directionsService = new google.maps.DirectionsService();
 
-				function initialize()
+				function initialize_'.$map_id.'()
 				{
 					// setup the map
 					'.$map_id.' = new google.maps.Map(document.getElementById("g-map-'.$map_id.'"), {
@@ -125,6 +125,7 @@ function ipGoogleMaps($atts) {
 
 					.$center_js.
 				'}
+				initialize_'.$map_id.'();
 			</script>
 			';
 

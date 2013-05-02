@@ -1,8 +1,4 @@
 //initialize the google map
-window.onload = function () {
-	initialize();
-}
-
 function calcRoute() {
 	var start = document.getElementById("g-start").value;
 	var end = document.getElementById("g-end").value;
