@@ -302,8 +302,8 @@ jQuery(document).ready(function($) {
 			</tr>
 		</table>
 
-		<p><strong>If you are adding multiple maps to a page, makke sure to set a unique "map_id" for each map.</strong></p>
-		<p><strong>If a map has multipse markers, it will ignore "zoom" settings, and center the map with ass markers visible.</strong></p>
+		<p><strong>If you are adding multiple maps to a page, make sure to set a unique "map_id" for each map.</strong></p>
+		<p><strong>If a map has multiple markers, it will ignore "zoom" settings, and center the map with ass markers visible.</strong></p>
 
 		<?php submit_button(); ?>
 	</form>
