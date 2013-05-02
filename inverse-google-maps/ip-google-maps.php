@@ -125,7 +125,9 @@ function ipGoogleMaps($atts) {
 
 					.$center_js.
 				'}
-				initialize_'.$map_id.'();
+				window.onload = function () { 
+					initialize_'.$map_id.'();
+				}
 			</script>
 			';
 
