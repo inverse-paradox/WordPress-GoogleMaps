@@ -125,9 +125,17 @@ function ipGoogleMaps($atts) {
 
 					.$center_js.
 				'}
-				window.onload = function () { 
-					initialize_'.$map_id.'();
-				}
+
+			    if(window.addEventListener)
+			    {
+			        //All browsers, except IE before version 9.
+			        window.addEventListener("load", initialize_'.$map_id.', false);
+			    } 
+			    else if(window.attachEvent)
+			    {
+			        //IE before version 9.
+			        window.attachEvent("load", initialize_'.$map_id.');
+			    }
 			</script>
 			';
 
