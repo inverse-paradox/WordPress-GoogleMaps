@@ -157,7 +157,7 @@ function ipGoogleMaps($atts) {
 			    else if(window.attachEvent)
 			    {
 			        //IE before version 9.
-			        window.attachEvent("load", initialize_'.$map_id.');
+			        window.attachEvent("onload", initialize_'.$map_id.');
 			    }
 			</script>
 			';
