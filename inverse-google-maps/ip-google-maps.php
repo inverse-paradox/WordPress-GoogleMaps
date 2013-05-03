@@ -41,6 +41,7 @@ function ipGoogleMaps($atts) {
 	if( isset($locations[0]['title']) && isset($locations[0]['address']) && isset($locations[0]['coordinates']) ) {
 		$count = 0;
 		$directions_options = '';
+		$markers = '';
 
 		if ( $display != 'all' && strstr( $display, ',' ) ) {
 			$display = str_replace( ' ', '', $display );
@@ -53,21 +54,36 @@ function ipGoogleMaps($atts) {
 				} else {
 					$marker_coords .= ', new google.maps.LatLng (' . $locations[$display_count]['coordinates'] . ')';
 				}
+				$markers .= 'var marker' . $count . ' = new google.maps.Marker({
+					position: new google.maps.LatLng(' . $locations[$display_count]['coordinates'] . '),
+					map: '.$map_id.',
+					title: "' . $locations[$display_count]['title'] . '"
+				});';
 				$count++;
 			}
 		} elseif ( $display != 'all' ) {
-				$single_location_option = '<input type="hidden" id="g-end" value="' . $locations[$display]['address'] . '" />';
+				$single_location_option = '<input type="hidden" id="g-end_'.$map_id.'" value="' . $locations[$display]['address'] . '" />';
 				$centerpoint = $locations[$display]['coordinates'];
+				$markers .= 'var marker' . $count . ' = new google.maps.Marker({
+					position: new google.maps.LatLng(' . $locations[$display]['coordinates'] . '),
+					map: '.$map_id.',
+					title: "' . $locations[$display]['title'] . '"
+				});';
 				$count++;
 		} else {
 			foreach ( $locations as $location ) {
 				if( $count == 0 ) {
-					$single_location_option = '<input type="hidden" id="g-end" value="' . $location['address'] . '" />';
+					$single_location_option = '<input type="hidden" id="g-end_'.$map_id.'" value="' . $location['address'] . '" />';
 					$centerpoint = $location['coordinates'];
 					$marker_coords = 'new google.maps.LatLng (' . $location['coordinates'] . ')';
 				} else {
 					$marker_coords .= ', new google.maps.LatLng (' . $location['coordinates'] . ')';
 				}
+				$markers .= 'var marker' . $count . ' = new google.maps.Marker({
+					position: new google.maps.LatLng(' . $location['coordinates'] . '),
+					map: '.$map_id.',
+					title: "' . $location['title'] . '"
+				});';
 				$directions_options .= '<option value="' . $location['address'] . '">' . $location['title'] . '</option>';
 				$count++;
 			}
@@ -76,7 +92,7 @@ function ipGoogleMaps($atts) {
 		if( $count == 1 ) {
 			$directions_options = $single_location_option;
 		} else {
-			$directions_options = '<label>End Location: </label><select id="g-end">' . $directions_options . '</select>';
+			$directions_options = '<label>End Location: </label><select id="g-end_'.$map_id.'">' . $directions_options . '</select>';
 			$center_js = '
 			var LatLngList = new Array (' . $marker_coords . ');
 			var bounds = new google.maps.LatLngBounds ();
@@ -89,22 +105,12 @@ function ipGoogleMaps($atts) {
 
 		// if locations exist, build the javascript that creates the map
 		if( $locations ) {
-			$markers = '';
 			$count = 0;
-
-			// add a marker for each location
-			foreach( $locations as $location ) {
-				$markers .= 'var marker' . $count . ' = new google.maps.Marker({
-					position: new google.maps.LatLng(' . $location['coordinates'] . '),
-					map: '.$map_id.',
-					title: "' . $location['title'] . '"
-				});';
-			}
 
 			$map_js = '
 			<script>
 				var '.$map_id.';
-				var directionsDisplay;
+				var directionsDisplay_'.$map_id.';
 				var directionsService = new google.maps.DirectionsService();
 
 				function initialize_'.$map_id.'()
@@ -119,12 +125,29 @@ function ipGoogleMaps($atts) {
 					.$markers.
 
 					'// setup the directions
-					directionsDisplay = new google.maps.DirectionsRenderer();
-					directionsDisplay.setMap('.$map_id.');
-					directionsDisplay.setPanel(document.getElementById("g-directions-'.$map_id.'"));'
+					directionsDisplay_'.$map_id.' = new google.maps.DirectionsRenderer();
+					directionsDisplay_'.$map_id.'.setMap('.$map_id.');
+					directionsDisplay_'.$map_id.'.setPanel(document.getElementById("g-directions-'.$map_id.'"));'
 
 					.$center_js.
 				'}
+
+				function calcRoute_'.$map_id.'() {
+					var start = document.getElementById("g-start_'.$map_id.'").value;
+					var end = document.getElementById("g-end_'.$map_id.'").value;
+
+					var request = {
+						origin:start,
+						destination:end,
+						travelMode: google.maps.TravelMode.DRIVING
+					};
+
+					directionsService.route(request, function(result, status) {
+						if (status == google.maps.DirectionsStatus.OK) {
+							directionsDisplay_'.$map_id.'.setDirections(result);
+						}
+					});
+				}
 
 			    if(window.addEventListener)
 			    {
@@ -145,9 +168,9 @@ function ipGoogleMaps($atts) {
 				$directions_html = '
 				<div class="directions-form">
 					<form action="">
-						<label>Start Address: </label><input type="text" id="g-start">'
+						<label>Start Address: </label><input type="text" id="g-start_'.$map_id.'">'
 						.$directions_options.
-						'<input type="submit" value="Get Directions" onclick="calcRoute(); return false;">
+						'<input type="submit" value="Get Directions" onclick="calcRoute_'.$map_id.'(); return false;">
 					</form>
 				</div><!--/directions-form-->
 
