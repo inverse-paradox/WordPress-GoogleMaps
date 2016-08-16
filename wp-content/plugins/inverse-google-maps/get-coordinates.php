@@ -23,7 +23,7 @@ function sgm_get_coordinates( $address ) {
 	
 	// this doesn't work anymore: http://maps.google.com/maps/geo?output=xml&q=
 
-	$data = file_get_contents( "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=$address" );
+	$data = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=$address");
 	$data = json_decode( $data );
 
 	$coordinates['lat'] = $data->results[0]->geometry->location->lat;

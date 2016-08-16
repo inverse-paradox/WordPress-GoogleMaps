@@ -14,7 +14,7 @@ function enqueue_scripts() {
 	global $post;
 	
 	if(strpos($post->post_content, 'ip-google-map')) {
-		wp_register_script("ip-google-maps", 'http://maps.google.com/maps/api/js?sensor=false', array("jquery"));
+		wp_register_script("ip-google-maps", 'http://maps.google.com/maps/api/js?key=AIzaSyC4qGu0s0wW_eDqUCPQNB_qWDzAzzN3Rc4', array("jquery"));
 		//wp_register_script("ip-google-map-controls", plugin_dir_url( __FILE__ )."js/google-maps.js", array("jquery", "ip-google-maps"));
 		wp_enqueue_script('ip-google-maps');
 		//wp_enqueue_script('ip-google-map-controls');
@@ -139,7 +139,7 @@ function ipGoogleMaps($atts) {
 					var request = {
 						origin:start,
 						destination:end,
-						travelMode: google.maps.TravelMode.DRIVING
+						travelMode: google.maps.TravelMode.DRIVING,
 					};
 
 					directionsService.route(request, function(result, status) {
