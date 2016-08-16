@@ -224,9 +224,16 @@ function sgm_settings() {
 jQuery(document).ready(function($) {
 	// add location row
 	$('#sgm-add-location').click(function() {
-		var last_row = $('.sgm_location_row').last().index();
+		var last_row = (parseInt($('.sgm_location_row').last().index()) / 2) + 1;
 
-		$('.sgm_location_row').last().after('<tr valign="top" class="sgm_location_row"><td><p><strong>Location Title</strong><br /><input type="text" name="sgm_location[' + last_row + '][title]" value=""></p></td><td><p><strong>Location Address</strong><br /><input type="text" name="sgm_location[' + last_row + '][address]" value=""></p></td><td><p><strong>Location Coordinates</strong><br /><input type="text" name="sgm_location[' + last_row + '][coordinates]" value=""></p></td></tr>');
+		$('.sgm_shortcode_row').last().after('<tr valign="top" class="sgm_location_row"><td><p><strong>Location Title</strong><br /><input type="text" name="sgm_location[' + last_row + '][title]" value=""></p></td><td><p><strong>Location Address</strong><br /><input type="text" name="sgm_location[' + last_row + '][address]" value=""></p></td><td><p><strong>Location Coordinates</strong><br /><input type="text" name="sgm_location[' + last_row + '][coordinates]" value=""></p></td><td valign="middle"><a href="#" class="sgm-remove-location">Remove Location</a></td></tr><tr><td colspan="4"><p style="margin: 0; padding: 5px; background: #ddd;">[ip-google-map show_directions="true" zoom="13" display="' + last_row + '" map_id="YOUR_ID"]</p></td></tr>');
+	});
+
+	// remove location row
+	$('.sgm-remove-location').live('click', function() {
+		var remove_location = $(this).closest('tr');
+		remove_location.next('tr').remove();
+		remove_location.remove();
 	});
 
 	// remove location row
@@ -311,9 +318,13 @@ jQuery(document).ready(function($) {
 							<input type="text" name="sgm_location[<?php echo $count; ?>][title]" value=""></p>
 						<?php } ?>
 					</td>
+
+					<td valign="middle">
+						<a href="#" class="sgm-remove-location">Remove Location</a>
+					</td>
 				</tr>
-				<tr>
-					<td colspan="3">
+				<tr class="sgm_shortcode_row">
+					<td colspan="4">
 						<p style="margin: 0; padding: 5px; background: #ddd;">[ip-google-map show_directions="true" zoom="13" display="<?php echo $count; ?>" map_id="YOUR_ID"]</p>	
 					</td>
 				</tr>
@@ -321,9 +332,9 @@ jQuery(document).ready(function($) {
 				<?php $count++;
 			} ?>
 
-			<tr valign="top">
+			<tr valign="top" class="add-location">
 				<td colspan="3">
-					<a href="#" id="sgm-add-location">Add Location</a> | <a href="#" id="sgm-remove-location">Remove Location</a>
+					<p><a href="#" id="sgm-add-location" class="button">Add Location</a></p>
 				</td>
 			</tr>
 			<tr>
